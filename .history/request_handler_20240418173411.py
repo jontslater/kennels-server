@@ -1,8 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_animals, get_single_animal
-from views import get_all_locations, get_single_location
-from views import get_all_customers, get_single_customer
-from views import get_all_employees, get_single_employee
 import json 
 
 
@@ -58,69 +55,21 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
-    def do_GET(self):
-        self._set_headers(200)    
-        response = {}  # Default response    
+        def do_GET(self):
+            self._set_headers(200)
+            response = {}  # Default response
 
         # Parse the URL and capture the tuple that is returned
-        (resource, id) = self.parse_url(self.path)    
+            (resource, id) = self.parse_url(self.path)
 
-        if resource == "animals":    
-            if id is not None    :
-               response = get_single_animal(id)     
+            if resource == "animals":
+                if id is not None:
+                    response = get_single_animal(id)
 
-            else:
-               response = get_all_animals()         
+                else:
+                    response = get_all_animals()
 
-        self.wfile.write(json.dumps(response).encode())
-        
-    def do_GET(self):
-        self._set_headers(200)    
-        response = {}  # Default response    
-
-        # Parse the URL and capture the tuple that is returned
-        (resource, id) = self.parse_url(self.path)    
-
-        if resource == "locations":    
-            if id is not None    :
-               response = get_single_location(id)     
-
-            else:
-               response = get_all_locations()         
-
-        self.wfile.write(json.dumps(response).encode())
-        
-    def do_GET(self):
-        self._set_headers(200)
-        response = {}  # Default response
-
-        # Parse the URL and capture the tuple that is returned
-        (resource, id) = self.parse_url(self.path)
-
-        if resource == "employees":
-            if id is not None:
-                response = get_single_employee(id)
-            else:
-                response = get_all_employees()
-
-        self.wfile.write(json.dumps(response).encode())
-        
-        
-    def do_GET(self):
-        self._set_headers(200)
-        response = {}  # Default response
-
-        # Parse the URL and capture the tuple that is returned
-        (resource, id) = self.parse_url(self.path)
-
-        if resource == "customers":
-            if id is not None:
-                response = get_single_customer(id)
-            else:
-                response = get_all_customers()
-
-        self.wfile.write(json.dumps(response).encode())
-              
+            self.wfile.write(json.dumps(response).encode())
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.
