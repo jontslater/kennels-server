@@ -1,8 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals, get_single_animal, create_animal
-from views import get_all_locations, get_single_location, create_location
-from views import get_all_customers, get_single_customer, create_customer
-from views import get_all_employees, get_single_employee, create_employee
+from views import get_all_animals, get_single_animal
+from views import get_all_locations, get_single_location
+from views import get_all_customers, get_single_customer
+from views import get_all_employees, get_single_employee
 import json 
 
 
@@ -58,7 +58,7 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
-    def do_GET(self):
+    def do_GET(self):    
         self._set_headers(200)
         response = {}  # Default response
 
@@ -68,29 +68,58 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "animals":
             if id is not None:
                 response = get_single_animal(id)
+
             else:
                 response = get_all_animals()
 
-        elif resource == "locations":
-            if id is not None:
-                response = get_single_location(id)
-            else:
-                response = get_all_locations()
+        self.wfile.write(json.dumps(response).encode())
+        
+    def do_GET(self):
+        self._set_headers(200)    
+        response = {}  # Default response    
 
-        elif resource == "employees":
+        # Parse the URL and capture the tuple that is returned
+        (resource, id) = self.parse_url(self.path)    
+
+        if resource == "locations":    
+            if id is not None    :
+               response = get_single_location(id)     
+
+            else:
+               response = get_all_locations()         
+
+        self.wfile.write(json.dumps(response).encode())
+        
+    def do_GET(self):
+        self._set_headers(200)
+        response = {}  # Default response
+
+        # Parse the URL and capture the tuple that is returned
+        (resource, id) = self.parse_url(self.path)
+
+        if resource == "employees":
             if id is not None:
                 response = get_single_employee(id)
             else:
                 response = get_all_employees()
 
-        elif resource == "customers":
+        self.wfile.write(json.dumps(response).encode())
+        
+        
+    def do_GET(self):
+        self._set_headers(200)
+        response = {}  # Default response
+
+        # Parse the URL and capture the tuple that is returned
+        (resource, id) = self.parse_url(self.path)
+
+        if resource == "customers":
             if id is not None:
                 response = get_single_customer(id)
             else:
                 response = get_all_customers()
 
         self.wfile.write(json.dumps(response).encode())
-
               
 
     # Here's a method on the class that overrides the parent's method.
@@ -106,23 +135,17 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
-        # Initialize new entities
-        new_entity = None
+        # Initialize new animal
+        new_animal = None
 
-        # Create new entity based on the resource type
+        # Add a new animal to the list. Don't worry about
+        # the orange squiggle, you'll define the create_animal
+        # function next.
         if resource == "animals":
-            new_entity = create_animal(post_body)
-        elif resource == "locations":
-            new_entity = create_location(post_body)
-        elif resource == "employees":
-            new_entity = create_employee(post_body)
-        elif resource == "customers":
-            new_entity = create_customer(post_body)
+            new_animal = create_animal(post_body)
 
-        # Encode the new entity and send in response
-        self.wfile.write(json.dumps(new_entity).encode())
-
-   
+        # Encode the new animal and send in response
+        self.wfile.write(json.dumps(new_animal).encode())    
         
 
     # Here's a method on the class that overrides the parent's method.
