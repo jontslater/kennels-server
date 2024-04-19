@@ -1,8 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_animals, get_single_animal, create_animal
-from views import get_all_locations, get_single_location, create_location
-from views import get_all_customers, get_single_customer, create_customer
-from views import get_all_employees, get_single_employee, create_employee
+from views import get_all_locations, get_single_location
+from views import get_all_customers, get_single_customer
+from views import get_all_employees, get_single_employee
 import json 
 
 
@@ -119,9 +119,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         elif resource == "customers":
             new_entity = create_customer(post_body)
 
-        # Encode the new entity and send in response
-        self.wfile.write(json.dumps(new_entity).encode())
-
+    # Encode the new entity and send in response
+    self.wfile.write(json.dumps(new_entity).encode())
    
         
 

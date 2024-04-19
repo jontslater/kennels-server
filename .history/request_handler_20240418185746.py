@@ -119,9 +119,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         elif resource == "customers":
             new_entity = create_customer(post_body)
 
-        # Encode the new entity and send in response
-        self.wfile.write(json.dumps(new_entity).encode())
-
+    # Encode the new entity and send in response
+    self.wfile.write(json.dumps(new_entity).encode())
    
         
 
