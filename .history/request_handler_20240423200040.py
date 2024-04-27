@@ -1,8 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal, get_animal_by_location_id, get_animal_by_status
+from views import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal
 from views import get_all_locations, get_single_location, create_location, delete_location, update_location
 from views import get_all_customers, get_single_customer, create_customer, delete_customer, update_customer, get_customer_by_email
-from views import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee, get_employee_by_location_id
+from views import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee
 import json 
 from urllib.parse import urlparse, parse_qs
 
@@ -55,59 +55,53 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
-    def do_GET(self):
-        self._set_headers(200)
+    def do_GET(self):    
+        self._set_headers(200) 
 
-        response = {}
+        response = {}    
 
-        # Parse URL and store entire tuple in a variable
-        parsed = self.parse_url(self.path)
+            # Parse URL and store entire tuple in a variable
+        parsed = self.parse_url(self.path)    
 
-        # If the path does not include a query parameter, continue with the original if block
-        if '?' not in self.path:
-            ( resource, id ) = parsed
+            # If the path does not include a query parameter, continue with the original if block
+        if '?' not in self.path:    
+                ( resource, id ) = parsed
 
-            # It's an if..else statement
-            if resource == "animals":
-                if id is not None:
-                    response = get_single_animal(id)
+                # It's an if..else statement
+                if resource == "animals":
+                    if id is not None:
+                        response = get_single_animal(id)
 
-                else:
-                    response = get_all_animals()
+                    else:
+                        response = get_all_animals()
 
-            if resource == "locations":
-                if id is not None:
-                    response = get_single_location(id)
+                if resource == "locations":
+                    if id is not None:
+                        response = get_single_location(id)
 
-                else:
-                    response = get_all_locations()
-            if resource == "employees":
-                if id is not None:
-                    response = get_single_employee(id)
+                    else:
+                        response = get_all_locations()
+                if resource == "employees":
+                    if id is not None:
+                        response = get_single_employee(id)
 
-                else:
-                    response = get_all_employees()
-            if resource == "customers":
-                if id is not None:
-                    response = get_single_customer(id)
+                    else:
+                        response = get_all_employees()
+                if resource == "customers":
+                    if id is not None:
+                        response = get_single_customer(id)
 
-                else:
-                    response = get_all_customers()
+                    else:
+                        response = get_all_customers()
 
-        else: # There is a ? in the path, run the query param functions
-                (resource, query) = parsed
+                else: # There is a ? in the path, run the query param functions    
+                    (resource, query) = parsed
 
-                if query.get('email') and resource == 'customers':
-                    response = get_customer_by_email(query['email'][0])
-                if query.get("location_id") and resource == 'animals':
-                    response = get_animal_by_location_id(query['location_id'][0])
-                if query.get("location_id") and resource == 'employees':
-                    response = get_employee_by_location_id(query['location_id'][0])
-                if query.get("status") and resource == 'animals':    
-                    response = get_animal_by_status(query['status'][0])
-                
+                # see if the query dictionary has an email key
+                    if query.get('email') and resource == 'customers':
+                        response = get_customer_by_email(query['email'][0])
 
-        self.wfile.write(json.dumps(response).encode())      
+                    self.wfile.write(json.dumps(response).encode())      
 
 
               

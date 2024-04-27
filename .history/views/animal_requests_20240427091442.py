@@ -146,7 +146,7 @@ def update_animal(id, new_animal):
             ANIMALS[index] = new_animal
             break
         
-def get_animal_by_location_id(location):
+def get_animal_by_location(location):
     with sqlite3.connect("./kennel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
@@ -163,39 +163,6 @@ def get_animal_by_location_id(location):
         FROM Animal a
         WHERE a.location_id = ?
         """, (location,))
-
-        animals = []
-
-        dataset = db_cursor.fetchall()
-
-        for row in dataset:
-            animal = Animal(row['id'],
-                            row['name'],
-                            row['breed'],
-                            row['status'],
-                            row['location_id'],
-                            row['customer_id'])
-            animals.append(animal.__dict__)
-
-    return animals
-
-def get_animal_by_status(status):
-    with sqlite3.connect("./kennel.sqlite3") as conn:
-        conn.row_factory = sqlite3.Row
-        db_cursor = conn.cursor()
-
-        # Write the SQL query to get the information you want
-        db_cursor.execute("""
-        SELECT
-            a.id,
-            a.name,
-            a.breed,
-            a.status,
-            a.location_id,
-            a.customer_id
-        FROM Animal a
-        WHERE a.status = ?
-        """, (status,))
 
         animals = []
 

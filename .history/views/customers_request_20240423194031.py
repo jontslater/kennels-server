@@ -65,6 +65,7 @@ def update_customer(id, new_customer):
 # TODO: you will get an error about the address on customer. Look through the customer model and requests to see if you can solve the issue.
         
 def get_customer_by_email(email):
+
     with sqlite3.connect("./kennel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
@@ -78,7 +79,7 @@ def get_customer_by_email(email):
             c.email,
             c.password
         from Customer c
-        WHERE c.email = ?
+        WHERE email = ?
         """, ( email, ))
 
         customers = []

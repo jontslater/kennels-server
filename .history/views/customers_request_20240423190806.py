@@ -7,9 +7,8 @@ CUSTOMERS = [
     {"id": 2, "name": "Jane Smith"},
     {
         "id": 3, 
-        "name": "Jenna Solis", 
-        "email": "jenna@solis.com",
-        "address": "301 Redirect Ave"
+        "name": "Alice Johnson", 
+        "email": "jenna@solis.com"
      }
 ]
 
@@ -65,6 +64,7 @@ def update_customer(id, new_customer):
 # TODO: you will get an error about the address on customer. Look through the customer model and requests to see if you can solve the issue.
         
 def get_customer_by_email(email):
+
     with sqlite3.connect("./kennel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
@@ -78,18 +78,14 @@ def get_customer_by_email(email):
             c.email,
             c.password
         from Customer c
-        WHERE c.email = ?
+        WHERE c.email
         """, ( email, ))
 
         customers = []
         dataset = db_cursor.fetchall()
 
         for row in dataset:
-            customer = Customer(row['id'], 
-                                row['name'], 
-                                row['address'], 
-                                row['email'] , 
-                                row['password'])
+            customer = Customer(row['id'], row['name'], row['address'], row['email'] , row['password'])
             customers.append(customer.__dict__)
 
     return customers

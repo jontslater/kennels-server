@@ -5,12 +5,7 @@ import json
 CUSTOMERS = [
     {"id": 1, "name": "John Doe"},
     {"id": 2, "name": "Jane Smith"},
-    {
-        "id": 3, 
-        "name": "Jenna Solis", 
-        "email": "jenna@solis.com",
-        "address": "301 Redirect Ave"
-     }
+    {"id": 3, "name": "Alice Johnson"}
 ]
 
 def get_all_customers():
@@ -65,6 +60,7 @@ def update_customer(id, new_customer):
 # TODO: you will get an error about the address on customer. Look through the customer model and requests to see if you can solve the issue.
         
 def get_customer_by_email(email):
+
     with sqlite3.connect("./kennel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
@@ -85,11 +81,7 @@ def get_customer_by_email(email):
         dataset = db_cursor.fetchall()
 
         for row in dataset:
-            customer = Customer(row['id'], 
-                                row['name'], 
-                                row['address'], 
-                                row['email'] , 
-                                row['password'])
+            customer = Customer(row['id'], row['name'], row['address'], row['email'] , row['password'])
             customers.append(customer.__dict__)
 
     return customers
