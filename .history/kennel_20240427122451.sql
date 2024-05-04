@@ -95,6 +95,4 @@ SELECT
     l.address location_address
 FROM employee e
 JOIN Location l
-    ON l.id = e.location_id  
-
-SELECT * FROM Animal ORDER BY id DESC;    
+    ON l.id = a.location_id  

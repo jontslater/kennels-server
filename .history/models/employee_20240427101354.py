@@ -3,4 +3,3 @@ class Employee():
     self.id = id
     self.name = name
     self.location = location_id
-    self.location = None

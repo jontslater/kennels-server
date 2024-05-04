@@ -80,21 +80,10 @@ SELECT
     a.status,
     a.location_id,
     a.customer_id,
-    c.name AS customer_name,
-    c.address AS customer_address,
-    c.email AS customer_email
+    c.name customer_name,
+    c.address customer_address
+		c.email customer_email
+		c.id customer_id
 FROM Animal a
 JOIN Customer c
     ON c.id = a.customer_id
-
-SELECT
-    e.id,
-    e.name,
-    e.location_id,
-    l.name location_name,
-    l.address location_address
-FROM employee e
-JOIN Location l
-    ON l.id = e.location_id  
-
-SELECT * FROM Animal ORDER BY id DESC;    

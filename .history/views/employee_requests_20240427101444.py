@@ -1,7 +1,6 @@
 import sqlite3
 import json
 from models import Employee
-from models import Location
 
 EMPLOYEES = [
     {"id": 1, "name": "Jenna Solis"},
@@ -22,12 +21,9 @@ def get_all_employees():
         SELECT
             e.id,
             e.name,
-            e.location_id,
-            l.name location_name,
-            l.address location_address
+            e.address,
+            e.location_id
         FROM employee e
-        JOIN Location l
-            ON l.id = e.location_id  
         """)
 
         # Initialize an empty list to hold all employee representations
@@ -48,13 +44,6 @@ def get_all_employees():
                             row['name'],
                             row['location_id'])
 
-            # Create a Location instance from the current row
-            location = Location(
-                            row['id'], 
-                            row['location_name'],
-                            row['location_address'])
-            
-            employee.location = location.__dict__
             employees.append(employee.__dict__)
 
     return employees

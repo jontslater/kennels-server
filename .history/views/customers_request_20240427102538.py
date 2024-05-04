@@ -27,11 +27,11 @@ def get_all_customers():
             c.id,
             c.name,
             c.address,
-            c.email
+            c.email,
         FROM customer c
         """)
 
-        # Initialize an empty list to hold all customer representations
+        # Initialize an empty list to hold all employee representations
         customers = []
 
         # Convert rows of data into a Python list
@@ -40,20 +40,19 @@ def get_all_customers():
         # Iterate list of data returned from database
         for row in dataset:
 
-            # Create a customer instance from the current row.
+            # Create an employee instance from the current row.
             # Note that the database fields are specified in
             # exact order of the parameters defined in the
-            # Customer class above.
-            customer = Customer(
+            # Employee class above.
+            employee = Customer(
                             row['id'], 
                             row['name'],
                             row['address'],
                             row['email'])
 
-            customers.append(customer.__dict__)
+            customers.append(employee.__dict__)
 
     return customers
-
 
 def get_single_customer(id):
     requested_customer = None
@@ -77,15 +76,20 @@ def create_customer(customer):
 
     # Return the dictionary with `id` property added
     return customer
-
 def delete_customer(id):
-    with sqlite3.connect("./kennel.sqlite3") as conn:
-        db_cursor = conn.cursor()
+    # Initial -1 value for customer index, in case one isn't found
+    customer_index = -1
 
-        db_cursor.execute("""
-        DELETE FROM customer
-        WHERE id = ?
-        """, (id, ))
+    # Iterate the CUSTOMERS list, but use enumerate() so that you
+    # can access the index value of each item
+    for index, customer in enumerate(CUSTOMERS):
+        if customer["id"] == id:
+            # Found the customer. Store the current index.
+            customer_index = index
+
+    # If the customer was found, use pop(int) to remove it from list
+    if customer_index >= 0:
+        CUSTOMERS.pop(customer_index)
 
 def update_customer(id, new_customer):
     # Iterate the CUSTOMERS list, but use enumerate() so that
