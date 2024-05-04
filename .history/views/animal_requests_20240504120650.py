@@ -116,32 +116,30 @@ def get_single_animal(id):
         FROM Animal a
         JOIN Location l ON l.id = a.location_id
         JOIN Customer c ON c.id = a.customer_id
-        WHERE a.id = ?
-        """, (id,))
+        """, ( id, ))
 
         # Load the single result into memory
         data = db_cursor.fetchone()
+        
+        dataset = db_cursor.fetchall()
+        
+        for row in dataset:
+            # Create a Location instance from the current row
+            location = Location(row['location_id'], row['location_name'], row['location_address'])
 
-        if not data:
-            return None
+            # Create a Customer instance from the current row
+            customer = Customer(row['customer_id'],row['customer_name'], row['customer_address'], row['customer_email'])
 
-        # Create a Location instance from the current row
-        location = Location(data['location_id'], data['location_name'], data['location_address'])
+            # Create an Animal instance from the current row
+            animal = Animal(row['id'], row['name'], row['breed'], row['status'],
+                    row['location_id'], row['customer_id'])
 
-        # Create a Customer instance from the current row
-        customer = Customer(data['customer_id'], data['customer_name'], data['customer_address'], data['customer_email'])
-
-        # Create an Animal instance from the current row
-        animal = Animal(data['id'], data['name'], data['breed'], data['status'], data['location_id'], data['customer_id'])
-
-        # Add the dictionary representation of the location to the animal
-        animal.location = location.__dict__
-
-        # Add the dictionary representation of the customer to the animal
-        animal.customer = customer.__dict__
+        # Create an animal instance from the current row
+        animal = Animal(data['id'], data['name'], data['breed'],
+                            data['status'], data['location_id'],
+                            data['customer_id'])
 
         return animal.__dict__
-
   
 def create_animal(new_animal):
     with sqlite3.connect("./kennel.sqlite3") as conn:

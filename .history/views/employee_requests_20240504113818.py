@@ -61,71 +61,11 @@ def get_all_employees():
     return employees
 
 def get_single_employee(id):
-    with sqlite3.connect("./kennel.sqlite3") as conn:
-        conn.row_factory = sqlite3.Row
-        db_cursor = conn.cursor()
-
-        # Use a ? parameter to inject a variable's value
-        # into the SQL statement.
-        db_cursor.execute("""
-        SELECT
-            e.id,
-            e.name,
-            e.location_id,
-            l.name as location_name,
-            l.address as location_address
-        FROM Employee e
-        JOIN Location l
-            ON l.id = e.location_id
-        WHERE e.id = ?
-        """, (id,))
-
-        # Load the single result into memory
-        data = db_cursor.fetchone()
-
-        if not data:
-            return None
-
-        # Create an Employee instance from the current row
-        employee = Employee(data['id'], data['name'], data['location_id'])
-
-        # Create a Location instance from the current row
-        location = Location(data['location_id'], data['location_name'], data['location_address'])
-
-        # Add the dictionary representation of the location to the employee
-        employee.location = location.__dict__
-
-        # Fetch animals for the employee
-        db_cursor.execute("""
-        SELECT
-            a.id,
-            a.name,
-            a.breed,
-            a.status,
-            a.location_id,
-            a.customer_id
-        FROM Animal a
-        WHERE a.location_id = ?
-        """, (data['location_id'],))
-        animals_rows = db_cursor.fetchall()
-
-        animals = []
-        for animal_row in animals_rows:
-            animal = {
-                'id': animal_row['id'],
-                'name': animal_row['name'],
-                'breed': animal_row['breed'],
-                'status': animal_row['status'],
-                'location_id': animal_row['location_id'],
-                'customer_id': animal_row['customer_id']
-            }
-            animals.append(animal)
-
-        # Add the list of animals to the employee
-        employee.animals = animals
-
-        return employee.__dict__
-
+    requested_employee = None
+    for employee in EMPLOYEES:
+        if employee["id"] == id:
+            requested_employee = employee
+    return requested_employee
 def create_employee(employee):
     # Get the id value of the last employee in the list
     max_id = EMPLOYEES[-1]["id"]

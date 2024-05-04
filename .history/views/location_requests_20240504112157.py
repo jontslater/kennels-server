@@ -1,5 +1,6 @@
 import sqlite3
 import json
+from models import location
 from models import animal
 from models import employee
 
@@ -21,7 +22,7 @@ def get_all_locations():
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        # Fetch locations
+        # Fetch all location details
         db_cursor.execute("""
         SELECT
             l.id,
@@ -52,11 +53,9 @@ def get_all_locations():
             FROM Animal a
             WHERE a.location_id = ?
             """, (location['id'],))
+            animals_rows = db_cursor.fetchall()
 
-            animal = []
-            animal_dataset = db_cursor.fetchall()
-
-            for animal_row in animal_dataset:
+            for animal_row in animals_rows:
                 animal = {
                     'id': animal_row['id'],
                     'name': animal_row['name'],
@@ -76,11 +75,9 @@ def get_all_locations():
             FROM Employee e
             WHERE e.location_id = ?
             """, (location['id'],))
+            employees_rows = db_cursor.fetchall()
 
-            employee = []
-            employee_dataset = db_cursor.fetchall()
-
-            for employee_row in employee_dataset:
+            for employee_row in employees_rows:
                 employee = {
                     'id': employee_row['id'],
                     'name': employee_row['name'],
@@ -95,78 +92,11 @@ def get_all_locations():
 
 
 def get_single_location(id):
-    with sqlite3.connect("./kennel.sqlite3") as conn:
-        conn.row_factory = sqlite3.Row
-        db_cursor = conn.cursor()
-
-        # Fetch location details
-        db_cursor.execute("""
-        SELECT
-            l.id,
-            l.name,
-            l.address
-        FROM location l
-        WHERE l.id = ?
-        """, (id,))
-        location_row = db_cursor.fetchone()
-
-        if not location_row:
-            return None
-
-        location = {
-            'id': location_row['id'],
-            'name': location_row['name'],
-            'address': location_row['address'],
-            'animals': [],
-            'employees': []
-        }
-
-        # Fetch animals for the location
-        db_cursor.execute("""
-        SELECT
-            a.id,
-            a.name,
-            a.breed,
-            a.status,
-            a.location_id,
-            a.customer_id
-        FROM Animal a
-        WHERE a.location_id = ?
-        """, (location['id'],))
-        animals_rows = db_cursor.fetchall()
-
-        for animal_row in animals_rows:
-            animal = {
-                'id': animal_row['id'],
-                'name': animal_row['name'],
-                'breed': animal_row['breed'],
-                'status': animal_row['status'],
-                'location_id': animal_row['location_id'],
-                'customer_id': animal_row['customer_id']
-            }
-            location['animals'].append(animal)
-
-        # Fetch employees for the location
-        db_cursor.execute("""
-        SELECT
-            e.id,
-            e.name,
-            e.location_id
-        FROM Employee e
-        WHERE e.location_id = ?
-        """, (location['id'],))
-        employees_rows = db_cursor.fetchall()
-
-        for employee_row in employees_rows:
-            employee = {
-                'id': employee_row['id'],
-                'name': employee_row['name'],
-                'location_id': employee_row['location_id']
-            }
-            location['employees'].append(employee)
-
-        return location
-
+    requested_location = None
+    for location in LOCATIONS:
+        if location["id"] == id:
+            requested_location = location
+    return requested_location
 
 def create_location(location):
     # Get the id value of the last location in the list
